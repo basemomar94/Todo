@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
             dialog.setContentView(bind.root)
             dialog.show()
             bind.addBu.setOnClickListener {
-                println("I work")
                 var title: String = bind.titleEd.text.toString()
                 var note_date: String = bind.dateEd.text.toString()
                 val model = Todo_item()
@@ -67,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 Getting_data()
+
                 dialog.hide()
 
 
