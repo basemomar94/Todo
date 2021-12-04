@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:minWidth="350dp"
+        android:minHeight="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <EditText
+            android:id="@+id/title_ed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:hint="add Todo item"
+            android:inputType="textPersonName"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/date_ed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:hint="add date"
+            android:inputType="date"
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/add_bu"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:onClick="add"
+            android:text="add" />
+    </LinearLayout>
+
+
+</FrameLayout>
