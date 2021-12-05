@@ -63,22 +63,12 @@ class MainActivity : AppCompatActivity() {
             )
 
             runOnUiThread {
-              //updateUI()
-
                 binding.recycleView.adapter = adapter
                 binding.recycleView.layoutManager = LinearLayoutManager(this)
                 binding.recycleView.setHasFixedSize(true)
                 adapter.setOnitemclick(object : Adpater.onItemclick {
                     override fun onclick(position: Int) {
-                        var db = Todo_Database.getInstance(this@MainActivity)
-                        Todo_Database.databaseWriteExecutor.execute {
-                            var todoItem: Todo_item = Todo_item()
-                            db.itemsDao().delete(todoItem)
-
-                        }
-                        adapter.notifyItemRemoved(position)
-                       // updateUI()
-
+                      Delete_item(position)
                     }
 
                 })
@@ -104,6 +94,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+    fun Delete_item (position : Int){
+        println("============================$position")
+        var db = Todo_Database.getInstance(this@MainActivity)
+        Todo_Database.databaseWriteExecutor.execute {
+            var todoItem: Todo_item = Todo_item()
+            db.itemsDao().delete(todoItem)
+
+        }
+        adapter.notifyItemRemoved(position)
     }
 
     fun updateUI() {
