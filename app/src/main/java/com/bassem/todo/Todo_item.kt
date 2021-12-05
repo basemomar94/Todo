@@ -15,7 +15,7 @@ class Todo_item
     {@NonNull
 var title :String=""
     @NonNull
-    var noteDate : String=""
+    var priority : String="1"
     @NonNull
     @PrimaryKey(autoGenerate = true)
     var id : Int=0

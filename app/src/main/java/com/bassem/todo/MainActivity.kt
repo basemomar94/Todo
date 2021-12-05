@@ -1,7 +1,6 @@
 package com.bassem.todo
 
 import android.app.Dialog
-import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -19,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var adapter: Adpater
     var check: ImageView? = null
+    var priority: Int? = null
 
 
     val todoList = ArrayList<Todo_item>()
@@ -29,13 +29,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        Getting_data()
         updateUI()
+        Getting_data()
+
         check = findViewById(R.id.checkbutton)
 
         binding.floatingActionButton.setOnClickListener {
             show_dialog()
+
 
         }
         binding.addRcycle.setOnClickListener {
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Getting_data()
+      // updateUI()
     }
 
     fun Getting_data() {
@@ -61,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             )
 
             runOnUiThread {
-                updateUI()
+              //updateUI()
 
                 binding.recycleView.adapter = adapter
                 binding.recycleView.layoutManager = LinearLayoutManager(this)
@@ -75,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
                         }
                         adapter.notifyItemRemoved(position)
+                       // updateUI()
 
                     }
 
@@ -92,11 +95,13 @@ class MainActivity : AppCompatActivity() {
         var db = Todo_Database.getInstance(this@MainActivity)
         Todo_Database.databaseWriteExecutor.execute {
             db.itemsDao().delete_all()
-        }
-        runOnUiThread {
-            Getting_data()
-            adapter.notifyDataSetChanged()
 
+            runOnUiThread {
+                Getting_data()
+                updateUI()
+                adapter.notifyDataSetChanged()
+
+            }
         }
 
     }
@@ -104,21 +109,33 @@ class MainActivity : AppCompatActivity() {
     fun updateUI() {
 
         var boolean: Boolean = false
+        var test : Int?=null
         var db = Todo_Database.getInstance(this)
 
         Todo_Database.databaseWriteExecutor.execute {
             boolean = db.itemsDao().getitmes().isNotEmpty()
+            test=db.itemsDao().getitmes().size
+            println("=========================$test")
+            println("=========================$boolean")
+
+            runOnUiThread {
+                if (boolean) {
+
+
+
+
+                    binding.itemsCard.visibility = View.VISIBLE
+                    binding.doneTV.visibility = View.GONE
+                } else {
+
+                    binding.itemsCard.visibility = View.GONE
+                    binding.doneTV.visibility = View.VISIBLE
+                }
+            }
+
         }
-        if (boolean == true) {
 
 
-            binding.itemsCard.visibility = View.VISIBLE
-            binding.doneTV.visibility = View.GONE
-        } else {
-
-            binding.itemsCard.visibility = View.GONE
-            binding.doneTV.visibility = View.VISIBLE
-        }
 
 
     }
@@ -134,17 +151,19 @@ class MainActivity : AppCompatActivity() {
         bind.addBu.setOnClickListener {
 
             var title: String = bind.titleEd.text.toString()
-            var note_date: String = bind.dateEd.text.toString()
+            var priority: String = bind.dateEd.text.toString()
             if (title.isNotEmpty()) {
                 val model = Todo_item()
                 model.title = title
-                model.noteDate = note_date
+                model.priority = priority
                 todoList.add(model)
                 var db = Todo_Database.getInstance(this)
                 Todo_Database.databaseWriteExecutor.execute {
                     db.itemsDao().insert_update(model)
                     runOnUiThread {
                         Getting_data()
+                        updateUI()
+
                         adapter.notifyDataSetChanged()
                         dialog.hide()
 

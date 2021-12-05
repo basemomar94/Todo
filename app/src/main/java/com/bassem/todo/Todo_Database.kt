@@ -9,7 +9,7 @@ import java.util.concurrent.Executors
 private const val  DATABASE_NAME= "todo_database"
 
 
-@Database (entities = [Todo_item::class], version = 1, exportSchema = false)
+@Database (entities = [Todo_item::class], version = 2, exportSchema = false)
 abstract class Todo_Database : RoomDatabase() {
 
   abstract fun itemsDao () : ItemsDao
