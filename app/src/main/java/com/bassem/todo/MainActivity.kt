@@ -51,23 +51,19 @@ class MainActivity : AppCompatActivity() {
                 model.title = title
                 model.noteDate = note_date
                 todoList.add(model)
-
-
-                if (todoList.isNotEmpty()) {
-                    binding.itemsCard.visibility = View.VISIBLE
-                    binding.doneTV.visibility = View.GONE
-                    println(todoList.isNotEmpty())
-
-                }
-
                 var db = Todo_Database.getInstance(this)
                 Todo_Database.databaseWriteExecutor.execute {
                     db.itemsDao().insert_update(model)
+                    runOnUiThread {
+                        Getting_data()
+                        adapter.notifyDataSetChanged()
+                        dialog.hide()
+
+                    }
 
                 }
-                Getting_data()
 
-                dialog.hide()
+
 
 
             }
@@ -84,22 +80,28 @@ class MainActivity : AppCompatActivity() {
     fun Getting_data() {
         var db = Todo_Database.getInstance(this)
         Todo_Database.databaseWriteExecutor.execute {
-            if (db.itemsDao().getitmes().isNotEmpty()) {
-                binding.itemsCard.visibility=View.VISIBLE
-                binding.doneTV.visibility=View.GONE}
+
 
              adapter = Adpater(
 
                 db.itemsDao().getitmes() as ArrayList<Todo_item>
             )
 
-            runOnUiThread {   binding.recycleView.adapter = adapter
+            runOnUiThread {
+                updateUI()
+
+                binding.recycleView.adapter = adapter
                 binding.recycleView.layoutManager = LinearLayoutManager(this)
                 binding.recycleView.setHasFixedSize(true)
                 adapter.setOnitemclick( object:Adpater.onItemclick{
                     override fun onclick(position: Int) {
-                        check?.setImageResource(R.drawable.check)
-                        Toast.makeText(this@MainActivity,"gi",Toast.LENGTH_LONG).show()
+                        var db = Todo_Database.getInstance(this@MainActivity)
+                        Todo_Database.databaseWriteExecutor.execute {
+                            var todoItem:Todo_item= Todo_item()
+                            db.itemsDao().delete(todoItem)
+
+                        }
+                        adapter.notifyItemRemoved(position)
 
                     }
 
@@ -112,4 +114,41 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-}
+
+    fun Delete_all(view: android.view.View) {
+
+        var db = Todo_Database.getInstance(this@MainActivity)
+        Todo_Database.databaseWriteExecutor.execute {
+            db.itemsDao().delete_all()
+        }
+        runOnUiThread {
+            Getting_data()
+            adapter.notifyDataSetChanged()
+
+        }
+
+    }
+    fun updateUI(){
+
+        var  boolean:Boolean=false
+        var db = Todo_Database.getInstance(this)
+
+            Todo_Database.databaseWriteExecutor.execute {
+                boolean=db.itemsDao().getitmes().isNotEmpty()
+            }
+        Toast.makeText(this,boolean.toString(),Toast.LENGTH_LONG).show()
+        if (boolean==true) {
+
+
+                binding.itemsCard.visibility=View.VISIBLE
+                binding.doneTV.visibility=View.GONE
+        }
+
+        else {
+
+            binding.itemsCard.visibility=View.GONE
+            binding.doneTV.visibility=View.VISIBLE
+        }
+
+
+}}
