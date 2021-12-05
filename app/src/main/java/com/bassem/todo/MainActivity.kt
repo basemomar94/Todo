@@ -34,39 +34,8 @@ class MainActivity : AppCompatActivity() {
        check =findViewById(R.id.checkbutton)
 
         binding.floatingActionButton.setOnClickListener {
-            val dialog = Dialog(this)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setTitle("write your todo item")
+            show_dialog()
 
-
-
-            dialog.setCancelable(true)
-            val bind = DialogueBinding.inflate(layoutInflater)
-            dialog.setContentView(bind.root)
-            dialog.show()
-            bind.addBu.setOnClickListener {
-                var title: String = bind.titleEd.text.toString()
-                var note_date: String = bind.dateEd.text.toString()
-                val model = Todo_item()
-                model.title = title
-                model.noteDate = note_date
-                todoList.add(model)
-                var db = Todo_Database.getInstance(this)
-                Todo_Database.databaseWriteExecutor.execute {
-                    db.itemsDao().insert_update(model)
-                    runOnUiThread {
-                        Getting_data()
-                        adapter.notifyDataSetChanged()
-                        dialog.hide()
-
-                    }
-
-                }
-
-
-
-
-            }
         }
 
 
@@ -151,4 +120,48 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-}}
+}
+    fun show_dialog(){
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setTitle("write your todo item")
+
+
+
+        dialog.setCancelable(true)
+        val bind = DialogueBinding.inflate(layoutInflater)
+        dialog.setContentView(bind.root)
+        dialog.show()
+        bind.addBu.setOnClickListener {
+
+            var title: String = bind.titleEd.text.toString()
+            var note_date: String = bind.dateEd.text.toString()
+            if (title.isNotEmpty()){
+                val model = Todo_item()
+                model.title = title
+                model.noteDate = note_date
+                todoList.add(model)
+                var db = Todo_Database.getInstance(this)
+                Todo_Database.databaseWriteExecutor.execute {
+                    db.itemsDao().insert_update(model)
+                    runOnUiThread {
+                        Getting_data()
+                        adapter.notifyDataSetChanged()
+                        dialog.hide()
+
+                    }
+
+                }
+
+            } else{
+                Toast.makeText(this,"please enter a text",Toast.LENGTH_LONG).show()
+            }
+
+
+
+
+
+        }
+    }
+
+}
