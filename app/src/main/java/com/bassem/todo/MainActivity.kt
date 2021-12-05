@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity() {
 
     val FILE_NAME: String = "notes"
 
-    lateinit var  adapter : Adpater
-    var check : ImageView?=null
+    lateinit var adapter: Adpater
+    var check: ImageView? = null
 
 
     val todoList = ArrayList<Todo_item>()
@@ -31,11 +31,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Getting_data()
-       check =findViewById(R.id.checkbutton)
+        updateUI()
+        check = findViewById(R.id.checkbutton)
 
         binding.floatingActionButton.setOnClickListener {
             show_dialog()
 
+        }
+        binding.addRcycle.setOnClickListener {
+            show_dialog()
         }
 
 
@@ -51,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         Todo_Database.databaseWriteExecutor.execute {
 
 
-             adapter = Adpater(
+            adapter = Adpater(
 
                 db.itemsDao().getitmes() as ArrayList<Todo_item>
             )
@@ -62,11 +66,11 @@ class MainActivity : AppCompatActivity() {
                 binding.recycleView.adapter = adapter
                 binding.recycleView.layoutManager = LinearLayoutManager(this)
                 binding.recycleView.setHasFixedSize(true)
-                adapter.setOnitemclick( object:Adpater.onItemclick{
+                adapter.setOnitemclick(object : Adpater.onItemclick {
                     override fun onclick(position: Int) {
                         var db = Todo_Database.getInstance(this@MainActivity)
                         Todo_Database.databaseWriteExecutor.execute {
-                            var todoItem:Todo_item= Todo_item()
+                            var todoItem: Todo_item = Todo_item()
                             db.itemsDao().delete(todoItem)
 
                         }
@@ -76,7 +80,6 @@ class MainActivity : AppCompatActivity() {
 
                 })
             }
-
 
 
         }
@@ -97,37 +100,33 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-    fun updateUI(){
 
-        var  boolean:Boolean=false
+    fun updateUI() {
+
+        var boolean: Boolean = false
         var db = Todo_Database.getInstance(this)
 
-            Todo_Database.databaseWriteExecutor.execute {
-                boolean=db.itemsDao().getitmes().isNotEmpty()
-            }
-        Toast.makeText(this,boolean.toString(),Toast.LENGTH_LONG).show()
-        if (boolean==true) {
-
-
-                binding.itemsCard.visibility=View.VISIBLE
-                binding.doneTV.visibility=View.GONE
+        Todo_Database.databaseWriteExecutor.execute {
+            boolean = db.itemsDao().getitmes().isNotEmpty()
         }
+        if (boolean == true) {
 
-        else {
 
-            binding.itemsCard.visibility=View.GONE
-            binding.doneTV.visibility=View.VISIBLE
+            binding.itemsCard.visibility = View.VISIBLE
+            binding.doneTV.visibility = View.GONE
+        } else {
+
+            binding.itemsCard.visibility = View.GONE
+            binding.doneTV.visibility = View.VISIBLE
         }
 
 
-}
-    fun show_dialog(){
+    }
+
+    fun show_dialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setTitle("write your todo item")
-
-
-
         dialog.setCancelable(true)
         val bind = DialogueBinding.inflate(layoutInflater)
         dialog.setContentView(bind.root)
@@ -136,7 +135,7 @@ class MainActivity : AppCompatActivity() {
 
             var title: String = bind.titleEd.text.toString()
             var note_date: String = bind.dateEd.text.toString()
-            if (title.isNotEmpty()){
+            if (title.isNotEmpty()) {
                 val model = Todo_item()
                 model.title = title
                 model.noteDate = note_date
@@ -153,12 +152,9 @@ class MainActivity : AppCompatActivity() {
 
                 }
 
-            } else{
-                Toast.makeText(this,"please enter a text",Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "please enter a text", Toast.LENGTH_LONG).show()
             }
-
-
-
 
 
         }

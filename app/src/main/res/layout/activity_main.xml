@@ -17,17 +17,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Todo List"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/doneTV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardCornerRadius="10dp">
 
             <LinearLayout
@@ -60,7 +49,7 @@
                     android:layout_height="match_parent">
 
                     <Button
-                        android:id="@+id/button2"
+                        android:id="@+id/add_rcycle"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_gravity="center|start"
